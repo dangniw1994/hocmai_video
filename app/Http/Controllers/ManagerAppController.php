@@ -14,21 +14,40 @@ class ManagerAppController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request )
+    public function index(Request $request)
     {
-        $data = HocMaiAppVersion::all();
-        //dd($request);
-        if ($request->has('os_id')) {
-            $data->where('os_id' ,$request->os_id);
-          //  dd($data,'1');
-        }
-        if ($request->has('status')) {
-            $data->where('status', $request->status);
-           // dd($data,'2');
-        }
-        if ($request->has('app_version')) {
-            $data->where('app_version', 'LIKE', '%' . $request->app_version . '%');
-           // dd($data,'3');
+        
+        $input = $request->all();
+       // dd($input['app_version']);
+        if(!empty($input)){
+            
+            if($input['app_version'] == null && $input['os_id'] == null && $input['status'] == null){
+                $data = HocMaiAppVersion::all();
+                
+            }
+            else if($input['app_version'] == null)
+            {
+                $data=DB::table('app_versions')->where('os_id',$input['os_id'])
+                ->where('status',$input['status'])
+                ->get();
+            }
+            else if( $input['os_id'] == null )
+            {
+                $data=DB::table('app_versions')->where('app_version',$input['app_version'])->where('status',$input['status'])->get();
+            }
+            else if($input['status'] == null)
+            {
+                $data=DB::table('app_versions')->where('app_version',$input['app_version'])->where('os_id',$input['os_id'])->get();
+            }
+            else
+            {
+                $data = DB::table('app_versions')->where('os_id',$input['os_id'])
+                ->where('status',$input['status'])
+                ->where('app_version',$input['app_version'])
+                ->get();
+            }
+        }else{
+            $data = HocMaiAppVersion::all();
         }
         // $data = HocMaiAppVersion::all();
         return view('hocmai_app.index')->with(compact('data'));

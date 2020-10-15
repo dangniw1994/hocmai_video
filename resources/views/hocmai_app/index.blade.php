@@ -17,20 +17,22 @@
           <div id="search_header" class="col-md-12">
             {{ Form::open(array('method'=>'get', 'action' => array('ManagerAppController@index','multiple' => 'multiple'))) }}
             <div class="col-md-2">
-                  {{ Form::select('os_id', getAppOs(),null, array('class' => 'form-control' )) }}
+              {{ Form::select('os_id', getApp(),null, array('class' => 'form-control','id'=>'os_id_select' )) }}
             </div>
             <div class="col-md-2">
               <select name="app_version" id="app_version" class="form-control">
-                @foreach(getVersion() as $city)
-                  <option value='{{ $city->app_version }}'>{{ $city->app_version }}</option>
+                <option value="">Tất cả</option>
+                @foreach(getVersion() as $item)
+                  <option value="{{ $item->app_version}}" >{{ $item->app_version }}</option>
                 @endforeach
               </select>
             </div>
             <div class="col-md-2">
-                  {{ Form::select('status', getStatusHeaderFooter(),null, array('class' => 'form-control status' )) }}
+                  {{ Form::select('status', getStatus(),old('status'), array('class' => 'form-control','id'=>'os_id_select' )) }}
             </div>
             <div class="col-md-2">
                 {{ Form::submit('tìm kiếm', array('class' => 'btn btn-success')) }}
+                <a href="{{action('ManagerAppController@index')}}" class="btn btn-info">Clear</a>
             </div>
             {{ Form::close() }}
           </div>
