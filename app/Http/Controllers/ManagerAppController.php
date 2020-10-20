@@ -17,27 +17,70 @@ class ManagerAppController extends Controller
     public function index(Request $request)
     {
         
-        $input = $request->all();
-       // dd($input['app_version']);
+            $input = $request->all();
+    //    // dd($input['app_version']);
+    //   
+    //     // $data = HocMaiAppVersion::all();
+    //     return view('hocmai_app.index')->with(compact('data'));
+        $os_id = DB::table('app_versions')->select('os_id')->distinct()->get()->pluck('os_id');
+        $status = DB::table('app_versions')->select('status')->distinct()->get()->pluck('status');
+        $appVersion = DB::table('app_versions')->select('app_version')->distinct()->get()->pluck('app_version');
+        
+        $data = HocMaiAppVersion::all();
         if(!empty($input)){
             
             if($input['app_version'] == null && $input['os_id'] == null && $input['status'] == null){
                 $data = HocMaiAppVersion::all();
-                
             }
             else if($input['app_version'] == null)
             {
-                $data=DB::table('app_versions')->where('os_id',$input['os_id'])
-                ->where('status',$input['status'])
-                ->get();
+                if($input['os_id'] == null && $input['status'] != null){
+                    $data=DB::table('app_versions')
+                    ->where('status',$input['status'])
+                    ->get();
+                }else if($input['os_id'] != null && $input['status'] == null )
+                {
+                    $data=DB::table('app_versions')->where('os_id',$input['os_id'])
+                    ->get();
+                }else
+                {
+                    $data=DB::table('app_versions')->where('os_id',$input['os_id'])
+                    ->where('status',$input['status'])
+                    ->get();
+                }
+               
             }
             else if( $input['os_id'] == null )
             {
-                $data=DB::table('app_versions')->where('app_version',$input['app_version'])->where('status',$input['status'])->get();
+                if($input['app_version'] == null && $input['status'] != null){
+                    $data=DB::table('app_versions')
+                    ->where('status',$input['status'])
+                    ->get();
+                }else if($input['app_version'] != null && $input['status'] == null )
+                {
+                    $data=DB::table('app_versions')->where('app_version',$input['app_version'])
+                    ->get();
+                }else
+                {
+                    $data=DB::table('app_versions')->where('app_version',$input['app_version'])->where('status',$input['status'])->get();
+                }
+                
             }
             else if($input['status'] == null)
             {
-                $data=DB::table('app_versions')->where('app_version',$input['app_version'])->where('os_id',$input['os_id'])->get();
+                if($input['app_version'] == null && $input['os_id'] != null){
+                    $data=DB::table('app_versions')
+                    ->where('os_id',$input['os_id'])
+                    ->get();
+                }else if($input['app_version'] != null && $input['os_id'] == null )
+                {
+                    $data=DB::table('app_versions')->where('app_version',$input['app_version'])
+                    ->get();
+                }else
+                {
+                    $data=DB::table('app_versions')->where('app_version',$input['app_version'])->where('os_id',$input['os_id'])->get();
+                }
+                
             }
             else
             {
@@ -49,8 +92,13 @@ class ManagerAppController extends Controller
         }else{
             $data = HocMaiAppVersion::all();
         }
-        // $data = HocMaiAppVersion::all();
-        return view('hocmai_app.index')->with(compact('data'));
+        
+        return view('hocmai_app.index',[
+            'os_id' => $os_id,
+            'status'=>$status,
+            'appVersion' => $appVersion,
+            'data'=>$data
+        ]);
     }
 
     /**

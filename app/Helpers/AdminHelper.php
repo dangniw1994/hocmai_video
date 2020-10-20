@@ -355,29 +355,3 @@ function getNameStatusAppVersion($status)
     }
     return null;
 }
-function getVersion()
-{
-    $result = DB::table('app_versions')->select(DB::raw('app_version '))
-    ->groupBy('app_version')
-    ->havingRaw('COUNT(app_version)>= 1')
-    ->get();
-    return $result;
-}
-// app
-function getApp()
-{
-    $data = [
-        ''=>'Tất cả',
-        APP_IOS_ID => 'IOS',
-        APP_ANDROID_ID => 'ANDROID',
-    ];
-    return $data;
-}
-function getStatus(){
-    $data = [
-        ''=>'Tất cả',
-        1 => 'Active',
-        0 => 'Inactive',
-    ];
-    return $data;
-}

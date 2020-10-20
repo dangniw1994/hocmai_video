@@ -17,18 +17,28 @@
           <div id="search_header" class="col-md-12">
             {{ Form::open(array('method'=>'get', 'action' => array('ManagerAppController@index','multiple' => 'multiple'))) }}
             <div class="col-md-2">
-              {{ Form::select('os_id', getApp(),null, array('class' => 'form-control','id'=>'os_id_select' )) }}
+              <select name="os_id" id="os_id" class="form-control">
+                  <option value="">Tất cả</option>
+                  @foreach($os_id as $item)
+                    <option value="{{$item}}">{{$item == 1 ? "Ios":"Android"}}</option>
+                  @endforeach
+              </select>
             </div>
             <div class="col-md-2">
               <select name="app_version" id="app_version" class="form-control">
                 <option value="">Tất cả</option>
-                @foreach(getVersion() as $item)
-                  <option value="{{ $item->app_version}}" >{{ $item->app_version }}</option>
+                @foreach($appVersion as $item)
+                  <option value="{{ $item}}" >{{ $item }}</option>
                 @endforeach
               </select>
             </div>
             <div class="col-md-2">
-                  {{ Form::select('status', getStatus(),old('status'), array('class' => 'form-control','id'=>'os_id_select' )) }}
+              <select name="status" id="status" class="form-control">
+                  <option value="">Tất cả</option>
+                  @foreach($status as $item)
+                    <option value="{{$item}}">{{$item == 0 ?"INACTIVE":"ACTIVE"}}</option>
+                  @endforeach
+              </select>
             </div>
             <div class="col-md-2">
                 {{ Form::submit('tìm kiếm', array('class' => 'btn btn-success')) }}
